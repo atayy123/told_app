@@ -1,16 +1,32 @@
 # told_app
 
-A new Flutter application.
+Told is currently a social media app without the back-end part. The users can share three different types of posts such as Photo, Video or Article.
+The users can also Retold a post of another user.
 
-## Getting Started
+The app include:
 
-This project is a starting point for a Flutter application.
+# Home Page
 
-A few resources to get you started if this is your first Flutter project:
+At the Home Page, there are two different tabs called Following and For you.
+These tabs include Retolds, Photos, Videos and Articles.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+# Trending
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The app shows trending hashtags with their posts.
+
+# Camera
+
+The app has a built in camera to create new photo or video posts. Users can also choose the photos and videos from the gallery. 
+
+# Direct Messages
+
+The users can send posts and photos from gallery to each other using direct messages. 
+
+# Map
+
+# Profile
+Each user has their profile page with different tabs called:
+- All Posts
+- Posts w/o Retolds
+- Retolds
+- Articles
