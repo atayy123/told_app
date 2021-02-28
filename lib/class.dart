@@ -1,6 +1,7 @@
 class User {
   String userPhoto;
   String username;
+  bool isFollowed;
   int tolds;
   int retolds;
   int followers;
@@ -10,6 +11,7 @@ class User {
   User(
       {this.userPhoto,
       this.username,
+      this.isFollowed,
       this.tolds,
       this.retolds,
       this.followers,
@@ -65,6 +67,7 @@ class PhotoPost {
   String descrip;
   String location;
   int likes;
+  int retolds;
   List<Comment> commentList;
   bool isLiked;
 
@@ -75,6 +78,7 @@ class PhotoPost {
       this.descrip,
       this.location,
       this.likes,
+      this.retolds,
       this.commentList,
       this.isLiked = false});
 }
@@ -86,6 +90,7 @@ class VideoPost {
   String descrip;
   String location;
   int likes;
+  int retolds;
   List<Comment> commentList;
   bool isLiked;
 
@@ -96,6 +101,7 @@ class VideoPost {
       this.descrip,
       this.location,
       this.likes,
+      this.retolds,
       this.commentList,
       this.isLiked = false});
 }
@@ -106,8 +112,8 @@ class ArticlePost {
   String title;
   String explanation;
   String article;
-  String location;
   int likes;
+  int retolds;
   List<Comment> commentList;
   bool isLiked;
 
@@ -117,8 +123,8 @@ class ArticlePost {
       this.title,
       this.explanation,
       this.article,
-      this.location,
       this.likes,
+      this.retolds,
       this.commentList,
       this.isLiked = false});
 }
@@ -134,8 +140,16 @@ class Trend {
 class Retold {
   User user;
   String time;
-  int likes;
   var post;
 
-  Retold({this.user, this.post, this.time, this.likes});
+  Retold({this.user, this.post, this.time});
+}
+
+class LocationPost {
+  var post;
+  String id;
+  double latitude;
+  double longitude;
+
+  LocationPost({this.post, this.id, this.latitude, this.longitude});
 }

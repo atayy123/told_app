@@ -27,7 +27,7 @@ class _CommentBuilderState extends State<CommentBuilder> {
         Container(
           margin: EdgeInsets.only(left: 10, top: 15, right: 10),
           decoration: BoxDecoration(
-              color: Colors.black12, borderRadius: BorderRadius.circular(20)),
+              color: Colors.black12, borderRadius: BorderRadius.circular(30)),
           child: Row(
             children: [
               Expanded(
@@ -77,7 +77,7 @@ class _CommentBuilderState extends State<CommentBuilder> {
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.only(top: 10.0, bottom: 15.0),
+          padding: EdgeInsets.only(top: 10.0, bottom: 15.0, right: 10),
           itemCount: widget.comments.length,
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(

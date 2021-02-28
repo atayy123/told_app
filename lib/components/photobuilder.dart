@@ -3,8 +3,6 @@ import 'package:told_app/class.dart';
 import 'package:told_app/components/likecommentbar.dart';
 import 'package:told_app/components/postheader.dart';
 
-import 'package:told_app/screens/photopostscreen.dart';
-
 class PhotoBuilder extends StatefulWidget {
   final PhotoPost item;
 
@@ -13,58 +11,91 @@ class PhotoBuilder extends StatefulWidget {
   _PhotoBuilderState createState() => _PhotoBuilderState();
 }
 
-class _PhotoBuilderState extends State<PhotoBuilder> {
+class _PhotoBuilderState extends State<PhotoBuilder>
+    with TickerProviderStateMixin {
+  AnimationController _controller;
+  Animation _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 0.0, end: 1).animate(_controller);
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onDoubleTap: () {
-        setState(() {
-          widget.item.isLiked = !widget.item.isLiked;
-        });
-      },
-      onTap: () async {
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PhotoPostScreen(item: widget.item)));
-        setState(() {});
-      },
-      child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: Column(
-            children: <Widget>[
-              PostHeader(
-                username: widget.item.user,
-                location: widget.item.location,
-                time: widget.item.time,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10.0),
-                width: double.infinity,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 400.0),
-                  child: Image.asset(
-                    widget.item.photoUrl,
-                    fit: BoxFit.fitWidth,
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      child: Column(
+        children: <Widget>[
+          PostHeader(
+            user: widget.item.user,
+            location: widget.item.location,
+            time: widget.item.time,
+          ),
+          GestureDetector(
+            onDoubleTap: () {
+              setState(() {
+                widget.item.isLiked = true;
+              });
+              _controller.forward();
+            },
+            child: Stack(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10.0),
+                  width: double.infinity,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 400.0),
+                    child: Image.asset(
+                      widget.item.photoUrl,
+                      fit: BoxFit.fitWidth,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                  child: Text(
-                    widget.item.descrip,
-                    style: TextStyle(fontSize: 16),
-                  )),
-              LikeCommentBar(
-                post: widget.item,
-                commentButton: true,
-              )
-            ],
-          )),
+                Positioned.fill(
+                  child: FadeTransition(
+                    opacity: _animation,
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: 72,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Container(
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              child: Text(
+                widget.item.descrip,
+                style: TextStyle(fontSize: 16),
+              )),
+          LikeCommentBar(
+            post: widget.item,
+          )
+        ],
+      ),
     );
   }
 }

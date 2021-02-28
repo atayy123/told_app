@@ -1,11 +1,10 @@
-import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:told_app/screens/articleinput.dart';
+import 'package:told_app/screens/newarticle.dart';
 import 'package:told_app/screens/camerapage.dart';
-import 'package:told_app/screens/newpostscreen.dart';
-import 'package:told_app/screens/newvideoscreen.dart';
+import 'package:told_app/screens/newphoto.dart';
+import 'package:told_app/screens/newvideo.dart';
 
 class ShareButton extends StatefulWidget {
   @override
@@ -19,16 +18,29 @@ class _ShareButtonState extends State<ShareButton> {
 
   void takePhoto() async {
     pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    if (pickedFile.path != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NewPostScreen(imagePath: pickedFile.path)));
+    }
   }
 
   void takeVideo() async {
     pickedVideo = await _picker.getVideo(source: ImageSource.gallery);
+    if (pickedVideo.path != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  NewVideoScreen(videoPath: pickedVideo.path)));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-        padding: EdgeInsets.symmetric(vertical: 10.0),
+        padding: EdgeInsets.symmetric(vertical: 8.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -43,9 +55,12 @@ class _ShareButtonState extends State<ShareButton> {
             context: context,
             builder: (context) {
               return Container(
-                decoration: BoxDecoration(),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   InkWell(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
                     onTap: () async {
                       try {
                         WidgetsFlutterBinding.ensureInitialized();
@@ -64,15 +79,8 @@ class _ShareButtonState extends State<ShareButton> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       takePhoto();
-                      Timer(Duration(seconds: 1), () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    NewPostScreen(imagePath: pickedFile.path)));
-                      });
                     },
                     child: ListTile(
                       title: Text("Image from Gallery"),
@@ -81,13 +89,6 @@ class _ShareButtonState extends State<ShareButton> {
                   InkWell(
                     onTap: () {
                       takeVideo();
-                      Timer(Duration(seconds: 1), () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NewVideoScreen(
-                                    videoPath: pickedVideo.path)));
-                      });
                     },
                     child: ListTile(
                       title: Text("Video from Gallery"),

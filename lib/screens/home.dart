@@ -4,6 +4,7 @@ import 'package:told_app/class.dart';
 import 'package:told_app/components/retoldbuilder.dart';
 import 'package:told_app/components/videobuilder.dart';
 import 'package:told_app/screens/dmpage.dart';
+import 'package:told_app/screens/login.dart';
 import '../components/photobuilder.dart';
 import '../data.dart';
 
@@ -17,6 +18,14 @@ class HomePage extends StatelessWidget {
             title: Text("T O L D"),
             actions: [
               IconButton(
+                icon: Icon(Icons.ac_unit),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
+                },
+                splashRadius: 20,
+              ),
+              IconButton(
                 icon: Icon(Icons.send),
                 onPressed: () {
                   Navigator.push(
@@ -29,6 +38,7 @@ class HomePage extends StatelessWidget {
             ],
             centerTitle: true,
             bottom: TabBar(
+              indicatorColor: Colors.black,
               tabs: [Tab(text: "Following"), Tab(text: "For You")],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:told_app/components/articlegrid.dart';
 import 'package:told_app/components/profilegrid.dart';
+import 'package:told_app/screens/userlist.dart';
 import '../class.dart';
 import '../data.dart';
 
@@ -76,33 +77,55 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                       ],
                     ),
-                    InkWell(
-                      splashColor: Colors.white,
-                      onTap: () {
-                        print("Follow");
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFE4395F),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 24,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Follow",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
+                    widget.user == currentUser
+                        ? Container()
+                        : Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: widget.user.isFollowed
+                                      ? Colors.black
+                                      : Colors.white),
+                              color: widget.user.isFollowed
+                                  ? Colors.white
+                                  : Color(0xFFE4395F),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    widget.user.isFollowed =
+                                        !widget.user.isFollowed;
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 24,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      widget.user.isFollowed
+                                          ? "Following"
+                                          : "Follow",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: widget.user.isFollowed
+                                            ? Color(0xFFE4395F)
+                                            : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -117,12 +140,12 @@ class _ProfilePageState extends State<ProfilePage>
                 color: Colors.grey[400],
               ),
               Container(
+                width: MediaQuery.of(context).size.width,
                 height: 64,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Container(
-                      width: 90,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -148,7 +171,6 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                     ),
                     Container(
-                      width: 90,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -173,56 +195,76 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ),
-                    Container(
-                      width: 90,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "FOLLOWERS",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserListPage(
+                                      title: "Followers",
+                                      users: users,
+                                    )));
+                      },
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "FOLLOWERS",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            widget.user.followers.toString(),
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                            SizedBox(
+                              height: 4,
                             ),
-                          ),
-                        ],
+                            Text(
+                              widget.user.followers.toString(),
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      width: 90,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "FOLLOWING",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserListPage(
+                                      title: "Following",
+                                      users: users,
+                                    )));
+                      },
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "FOLLOWING",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            widget.user.following.toString(),
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                            SizedBox(
+                              height: 4,
                             ),
-                          ),
-                        ],
+                            Text(
+                              widget.user.following.toString(),
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

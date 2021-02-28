@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:told_app/data.dart';
 import 'package:told_app/screens/profile.dart';
 import '../class.dart';
 
 class PostHeader extends StatelessWidget {
-  final User username;
+  final User user;
   final String location;
   final String time;
-  PostHeader({this.username, this.location, this.time});
+  PostHeader({this.user, this.location, this.time});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class PostHeader extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => ProfilePage(
-                      user: username,
+                      user: user,
                     )));
       },
       leading: Container(
@@ -37,24 +38,81 @@ class PostHeader extends StatelessWidget {
             child: Image(
               height: 50.0,
               width: 50.0,
-              image: AssetImage(username.userPhoto),
+              image: AssetImage(user.userPhoto),
               fit: BoxFit.cover,
             ),
           ),
         ),
       ),
       title: Text(
-        username.username,
+        user.username,
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),
       ),
       subtitle: location != null ? Text(location + " • " + time) : Text(time),
       trailing: IconButton(
-        icon: Icon(Icons.more_vert),
-        color: Colors.black,
-        onPressed: () => print('More'),
-      ),
+          icon: Icon(Icons.more_vert),
+          color: Colors.black,
+          onPressed: () => showModalBottomSheet(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0),
+              )),
+              context: context,
+              builder: (context) {
+                bool isMe = (user != currentUser);
+                return Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0),
+                        ),
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text(isMe ? "Report" : "Post to other Apps"),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text("Copy Link"),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text("Share to"),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text(
+                              isMe ? "Turn on Post Notifications" : "Archive"),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text(isMe ? "Unfollow" : "Delete"),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: ListTile(
+                          title: Text(isMe ? "Mute" : "Edit"),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              })),
     );
   }
 }

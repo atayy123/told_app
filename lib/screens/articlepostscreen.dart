@@ -21,8 +21,7 @@ class ArticlePostScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               PostHeader(
-                username: item.user,
-                location: item.location,
+                user: item.user,
                 time: item.time,
               ),
               Container(
@@ -52,6 +51,7 @@ class ArticlePostScreen extends StatelessWidget {
               LikeCommentBar(
                 post: item,
                 commentButton: false,
+                commenttext: false,
               ),
               CommentBuilder(
                 comments: comments,

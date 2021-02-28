@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:told_app/components/articlebuilder.dart';
-import 'package:told_app/components/photobuilder.dart';
-import 'package:told_app/components/videobuilder.dart';
+import 'package:told_app/components/postmessage.dart';
 import 'package:told_app/data.dart';
+import 'package:told_app/screens/imagescreen.dart';
 import '../class.dart';
 
 class MessagePage extends StatefulWidget {
@@ -19,13 +20,26 @@ class _MessagePageState extends State<MessagePage> {
   final TextEditingController _controller = TextEditingController();
   PickedFile pickedFile;
   final ImagePicker _picker = ImagePicker();
+  DateTime now = new DateTime.now();
+
+  String _getMinute(DateTime now) {
+    if (now.minute < 10) {
+      return "0" + now.minute.toString();
+    } else {
+      return now.minute.toString();
+    }
+  }
 
   void takePhoto() async {
     final _pickedFile = await _picker.getImage(source: ImageSource.gallery);
     setState(() {
       pickedFile = _pickedFile;
-      widget.dm.messages.insert(0,
-          ImageMessage(url: pickedFile.path, user: currentUser, time: "4.30"));
+      widget.dm.messages.insert(
+          0,
+          ImageMessage(
+              url: pickedFile.path,
+              user: currentUser,
+              time: now.hour.toString() + ":" + _getMinute(now)));
     });
   }
 
@@ -65,18 +79,6 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  Widget _postmessageselect(post) {
-    if (post is PhotoPost) {
-      return PhotoBuilder(item: post);
-    } else if (post is VideoPost) {
-      return VideoBuilder(item: post);
-    } else if (post is ArticlePost) {
-      return ArticleBuilder(item: post);
-    } else {
-      return Container();
-    }
-  }
-
   Widget _imagemessagebuild(ImageMessage msg, bool isMe) {
     return Container(
       decoration: BoxDecoration(
@@ -91,7 +93,22 @@ class _MessagePageState extends State<MessagePage> {
           Align(
               alignment: Alignment.centerLeft,
               child: ClipRRect(
-                child: Image.asset(msg.url),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ImageScreen(
+                                  url: msg.url,
+                                )));
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 4 / 7,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.fill, image: FileImage(File(msg.url)))),
+                  ),
+                ),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20)),
@@ -123,7 +140,7 @@ class _MessagePageState extends State<MessagePage> {
         children: [
           Align(
               alignment: Alignment.centerLeft,
-              child: _postmessageselect(msg.post)),
+              child: PostMessageBuild(item: msg.post)),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Align(
@@ -149,7 +166,63 @@ class _MessagePageState extends State<MessagePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
-            onPressed: () {},
+            onPressed: () => showModalBottomSheet(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                )),
+                context: context,
+                builder: (context) {
+                  return Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0),
+                            topRight: Radius.circular(20.0),
+                          ),
+                          onTap: () {},
+                          child: ListTile(
+                            title: Text("Report"),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                            title: Text("Delete"),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                            title: Text("Block"),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                            title: Text("Restrict"),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                            title: Text("Unfollow"),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: ListTile(
+                            title: Text("Mute"),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }),
             splashRadius: 20,
           )
         ],
@@ -175,16 +248,13 @@ class _MessagePageState extends State<MessagePage> {
               itemCount: widget.dm.messages.length,
             ),
           ),
-          SizedBox(
-            height: 10,
-          ),
           Container(
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25))),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+              color: Colors.black12,
+            ),
             child: Row(
               children: [
                 IconButton(
@@ -195,8 +265,12 @@ class _MessagePageState extends State<MessagePage> {
                 Expanded(
                     child: TextField(
                   onSubmitted: (input) {
-                    widget.dm.messages.insert(0,
-                        Message(msg: input, user: currentUser, time: "4.30"));
+                    widget.dm.messages.insert(
+                        0,
+                        Message(
+                            msg: input,
+                            user: currentUser,
+                            time: now.hour.toString() + ":" + _getMinute(now)));
                     _controller.clear();
                     setState(() {});
                   },
@@ -205,9 +279,22 @@ class _MessagePageState extends State<MessagePage> {
                   decoration:
                       InputDecoration.collapsed(hintText: "Send a message"),
                 )),
+                IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () {
+                      widget.dm.messages.insert(
+                          0,
+                          Message(
+                              msg: _controller.text,
+                              user: currentUser,
+                              time:
+                                  now.hour.toString() + ":" + _getMinute(now)));
+                      _controller.clear();
+                      setState(() {});
+                    }),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

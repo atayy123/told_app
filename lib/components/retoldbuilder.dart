@@ -32,7 +32,7 @@ class RetoldBuilder extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 PostHeader(
-                  username: item.user,
+                  user: item.user,
                   time: item.time,
                 ),
                 Container(

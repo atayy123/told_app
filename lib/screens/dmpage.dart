@@ -15,7 +15,7 @@ class DMPage extends StatefulWidget {
 
 class _DMPageState extends State<DMPage> {
   String _lastmessage(DM dm) {
-    if (dm.messages != []) {
+    if (dm.messages.length != 0) {
       if (dm.messages[0] is PostMessage) {
         return "Shared a post";
       } else if (dm.messages[0] is Message) {
@@ -26,7 +26,7 @@ class _DMPageState extends State<DMPage> {
         return "Unknown message";
       }
     } else {
-      return "";
+      return " ";
     }
   }
 
@@ -56,7 +56,7 @@ class _DMPageState extends State<DMPage> {
               physics: BouncingScrollPhysics(),
               itemCount: widget.dms.length,
               itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
+                return InkWell(
                   onTap: () async {
                     if (widget.dms[index].unread) {
                       await Navigator.push(
@@ -78,10 +78,8 @@ class _DMPageState extends State<DMPage> {
                     });
                   },
                   child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.all(5),
                     margin: EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,7 +123,9 @@ class _DMPageState extends State<DMPage> {
                             Container(
                               width: 250,
                               child: Text(
-                                _lastmessage(widget.dms[index]),
+                                widget.dms[index].messages != []
+                                    ? _lastmessage(widget.dms[index])
+                                    : "",
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 14),
@@ -136,7 +136,7 @@ class _DMPageState extends State<DMPage> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(widget.dms[index].messages != []
+                            Text(widget.dms[index].messages.length != 0
                                 ? widget.dms[index].messages[0].time
                                 : ""),
                             SizedBox(

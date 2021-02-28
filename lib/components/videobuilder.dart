@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:told_app/class.dart';
 import 'package:told_app/components/postheader.dart';
-import 'package:told_app/screens/videopostscreen.dart';
 import 'package:video_player/video_player.dart';
 
 import 'likecommentbar.dart';
@@ -22,9 +21,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void initState() {
-    // Create an store the VideoPlayerController. The VideoPlayerController
-    // offers several different constructors to play videos from assets, files,
-    // or the internet.
     if (widget.typeof == "asset") {
       _controller = VideoPlayerController.asset(widget.video);
     } else {
@@ -40,7 +36,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
     _controller.dispose();
 
     super.dispose();
@@ -55,16 +50,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         future: _initializeVideoPlayerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            // If the VideoPlayerController has finished initialization, use
-            // the data it provides to limit the aspect ratio of the video.
             return AspectRatio(
               aspectRatio: _controller.value.aspectRatio,
-              // Use the VideoPlayer widget to display the video.
               child: VideoPlayer(_controller),
             );
           } else {
-            // If the VideoPlayerController is still initializing, show a
-            // loading spinner.
             return Center(child: CircularProgressIndicator());
           }
         },
@@ -81,54 +71,86 @@ class VideoBuilder extends StatefulWidget {
   _VideoBuilderState createState() => _VideoBuilderState();
 }
 
-class _VideoBuilderState extends State<VideoBuilder> {
+class _VideoBuilderState extends State<VideoBuilder>
+    with TickerProviderStateMixin {
+  AnimationController _aController;
+  Animation _animation;
+
+  @override
+  void initState() {
+    _aController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 0.0, end: 1).animate(_aController);
+
+    _aController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _aController.reverse();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _aController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onDoubleTap: () {
-        setState(() {
-          widget.item.isLiked = !widget.item.isLiked;
-        });
-      },
-      onTap: () async {
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => VideoPostScreen(item: widget.item)));
-        setState(() {});
-      },
-      child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: Column(
-            children: <Widget>[
-              PostHeader(
-                username: widget.item.user,
-                location: widget.item.location,
-                time: widget.item.time,
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        child: Column(
+          children: <Widget>[
+            PostHeader(
+              user: widget.item.user,
+              location: widget.item.location,
+              time: widget.item.time,
+            ),
+            GestureDetector(
+              onDoubleTap: () {
+                setState(() {
+                  widget.item.isLiked = true;
+                });
+                _aController.forward();
+              },
+              child: Stack(
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 400),
+                    child: VideoPlayerScreen(
+                      video: widget.item.videoUrl,
+                      typeof: "asset",
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: FadeTransition(
+                      opacity: _animation,
+                      child: Icon(
+                        Icons.favorite,
+                        color: Colors.white,
+                        size: 72,
+                      ),
+                    ),
+                  )
+                ],
               ),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 900),
-                child: VideoPlayerScreen(
-                  video: widget.item.videoUrl,
-                  typeof: "asset",
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                  child: Text(
-                    widget.item.descrip,
-                    style: TextStyle(fontSize: 16),
-                  )),
-              LikeCommentBar(
-                post: widget.item,
-                commentButton: true,
-              ),
-            ],
-          )),
-    );
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                child: Text(
+                  widget.item.descrip,
+                  style: TextStyle(fontSize: 16),
+                )),
+            LikeCommentBar(
+              post: widget.item,
+            )
+          ],
+        ));
   }
 }

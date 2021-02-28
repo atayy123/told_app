@@ -23,9 +23,11 @@ class _ToldAppState extends State<ToldApp> {
     HomePage(),
     TrendPage(),
     CameraPage(),
-    MapPage(),
+    MapPage(
+      locPosts: mapPosts,
+    ),
     ProfilePage(
-      user: matthew,
+      user: currentUser,
     ),
   ];
 
@@ -34,7 +36,7 @@ class _ToldAppState extends State<ToldApp> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Colors.indigoAccent,
+          primaryColor: Color(0xFFED281A),
           scaffoldBackgroundColor: Color(0xFFF3F5F7),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

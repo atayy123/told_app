@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:told_app/screens/newpostscreen.dart';
-import 'package:told_app/screens/newvideoscreen.dart';
+import 'package:told_app/screens/newphoto.dart';
+import 'package:told_app/screens/newvideo.dart';
 import 'package:video_player/video_player.dart';
 
 List<CameraDescription> cameras = [];
@@ -86,7 +86,7 @@ class _CameraPageState extends State<CameraPage>
       body: Column(
         children: <Widget>[
           Container(
-            height: 500,
+            height: MediaQuery.of(context).size.height * 4.75 / 7,
             child: Center(
               child: _cameraPreviewWidget(),
             ),
@@ -161,47 +161,50 @@ class _CameraPageState extends State<CameraPage>
     return SizeTransition(
       sizeFactor: _flashModeControlRowAnimation,
       child: ClipRect(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            IconButton(
-              icon: Icon(Icons.flash_off),
-              color: controller?.value?.flashMode == FlashMode.off
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.off)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.flash_auto),
-              color: controller?.value?.flashMode == FlashMode.auto
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.auto)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.flash_on),
-              color: controller?.value?.flashMode == FlashMode.always
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.always)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.highlight),
-              color: controller?.value?.flashMode == FlashMode.torch
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.torch)
-                  : null,
-            ),
-          ],
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              IconButton(
+                icon: Icon(Icons.flash_off),
+                color: controller?.value?.flashMode == FlashMode.off
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.off)
+                    : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.flash_auto),
+                color: controller?.value?.flashMode == FlashMode.auto
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.auto)
+                    : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.flash_on),
+                color: controller?.value?.flashMode == FlashMode.always
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.always)
+                    : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.highlight),
+                color: controller?.value?.flashMode == FlashMode.torch
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.torch)
+                    : null,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -209,65 +212,68 @@ class _CameraPageState extends State<CameraPage>
 
   // Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.flash_on),
-          color: Colors.white,
-          onPressed: controller != null ? onFlashModeButtonPressed : null,
-        ),
-        IconButton(
-          icon: Icon(enableAudio ? Icons.volume_up : Icons.volume_mute),
-          color: Colors.white,
-          onPressed: controller != null ? onAudioModeButtonPressed : null,
-        ),
-        Container(
-          child: GestureDetector(
-            onLongPressStart: (_) {
-              onVideoRecordButtonPressed();
-            },
-            onLongPressEnd: (_) {
-              onStopButtonPressed();
-            },
-            child: Container(
-              child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
-                  onPressed: () {
-                    onTakePictureButtonPressed();
-                  }),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(25),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.flash_on),
+            color: Colors.white,
+            onPressed: controller != null ? onFlashModeButtonPressed : null,
+          ),
+          IconButton(
+            icon: Icon(enableAudio ? Icons.volume_up : Icons.volume_mute),
+            color: Colors.white,
+            onPressed: controller != null ? onAudioModeButtonPressed : null,
+          ),
+          Container(
+            child: GestureDetector(
+              onLongPressStart: (_) {
+                onVideoRecordButtonPressed();
+              },
+              onLongPressEnd: (_) {
+                onStopButtonPressed();
+              },
+              child: Container(
+                child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    onPressed: () {
+                      onTakePictureButtonPressed();
+                    }),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(25),
+                  ),
                 ),
               ),
             ),
-          ),
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(35),
+            height: 70,
+            width: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(35),
+              ),
+              border: Border.all(
+                width: 10,
+                color: Colors.white.withOpacity(.5),
+              ),
             ),
-            border: Border.all(
-              width: 10,
-              color: Colors.white.withOpacity(.5),
-            ),
           ),
-        ),
-        SizedBox(width: 45),
-        IconButton(
-          icon: Icon(Icons.cached),
-          color: Colors.white,
-          onPressed: () {
-            controller.description == cameras[0]
-                ? onNewCameraSelected(cameras[1])
-                : onNewCameraSelected(cameras[0]);
-          },
-        ),
-      ],
+          SizedBox(width: 45),
+          IconButton(
+            icon: Icon(Icons.cached),
+            color: Colors.white,
+            onPressed: () {
+              controller.description == cameras[0]
+                  ? onNewCameraSelected(cameras[1])
+                  : onNewCameraSelected(cameras[0]);
+            },
+          ),
+        ],
+      ),
     );
   }
 
